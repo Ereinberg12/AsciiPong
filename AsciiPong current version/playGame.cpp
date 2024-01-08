@@ -18,7 +18,7 @@ void playGame(int h, int w, int winScore, int fps, int paddleSize){
     int width = w; //game resolution
     int winningScore = winScore; //declare the number of points required to win
     int FPS = fps; //declare the number of frames per second
-    int numPlayers;
+    int numPlayers; //set to something other than 0, 1, or 2 to enter the loop prompting the player for the number of players
 
     //Turn off the input buffer
     BufferToggle toggle;
@@ -26,12 +26,17 @@ void playGame(int h, int w, int winScore, int fps, int paddleSize){
 
     bool playAgain = true; //set the variable that controls whether the game is played to true
     while(playAgain){
-        printStartPage(height, width, winningScore);
+        numPlayers = -1; //set to -1 so user is prompted when replaying game
+        //prompt the user for the number of players until they enter 0, 1, or 2
+        while(numPlayers != 0 && numPlayers != 1 && numPlayers != 2){
+            clearScreen();
+            printStartPage(height, width, winningScore);
 
-        std::cout << std::flush; //flush the buffer to use getImmediateInput()
-        numPlayers = getImmediateInput() - '0'; //ask the user for the number of players (subtract '0' since its stored as a char)
+            std::cout << std::flush; //flush the buffer to use getImmediateInput()
+            numPlayers = getImmediateInput() - '0'; //ask the user for the number of players (subtract '0' since its stored as a char)
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(200)); //load to add suspense
+            std::this_thread::sleep_for(std::chrono::milliseconds(200)); //load to add suspense
+        }
 
         //determine whether or not you should use AI for player 1 and player 2 based on user input
         int aiParameter = 1;
@@ -89,7 +94,7 @@ void playGame(int h, int w, int winScore, int fps, int paddleSize){
 
             userInput = detectKeyboardInput(FPS); //recieve user input
 
-            int numSpacesToMovePaddle = (paddleSize / 3) + 1; //decide how many positions to move the paddle when moving
+            int numSpacesToMovePaddle = std::max((paddleSize / 3), 1); //decide how many positions to move the paddle when moving
 
             //update P1's vertical position
             if(!(aiParameter == 2)){
@@ -166,7 +171,7 @@ void playGame(int h, int w, int winScore, int fps, int paddleSize){
                     pongManager.p2Score = 0;
                     break;
                 }
-                else{
+                else{//set the userInput to the killKey if the user chooses not to play again
                     userInput = killKey;
                 }
                 
@@ -186,7 +191,7 @@ void playGame(int h, int w, int winScore, int fps, int paddleSize){
 
     //turn the input buffer back on
     toggle.on();
-    clearScreen(); //clear the screen when the game is over
+    clearScreen(); //clear the screen when the game is over (might remove later so end screen stays on)
     return;
 }
 
@@ -196,26 +201,26 @@ bool keyboardHit() {
     int oldf;
     int ch;
 
-    //Get current terminal settings
+    //get current terminal settings
     tcgetattr(STDIN_FILENO, &oldt);
     newt = oldt;
 
-    //Set terminal to non-canonical mode and disable echo
+    //set terminal to non-canonical mode and disable echo
     newt.c_lflag &= ~(ICANON | ECHO);
     tcsetattr(STDIN_FILENO, TCSANOW, &newt);
 
-    //Set stdin to non-blocking
+    //set stdin to non-blocking
     oldf = fcntl(STDIN_FILENO, F_GETFL, 0);
     fcntl(STDIN_FILENO, F_SETFL, oldf | O_NONBLOCK);
 
     ch = getchar();
 
-    //Restore terminal settings and stdin flags
+    //restore terminal settings and stdin flags
     tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
     fcntl(STDIN_FILENO, F_SETFL, oldf);
 
     if(ch != EOF){
-        ungetc(ch, stdin);  //Put character back into buffer if it was read
+        ungetc(ch, stdin);  //put character back into buffer if it was read
         return true;
     }
 
@@ -224,17 +229,17 @@ bool keyboardHit() {
 
 //uses threading to detect keyboard input
 char detectKeyboardInput(int FPS) {
-    char c = 'n'; // Default input
+    char c = ' '; //default input
 
     std::chrono::milliseconds duration(1000 / FPS);
     auto endTime = std::chrono::steady_clock::now() + duration;
 
     do {
-        if (keyboardHit()) { // Check if a key has been pressed
-            c = getchar();   // Read the key
+        if (keyboardHit()) { //check if a key has been pressed
+            c = getchar();   //read the key
             break;
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(5)); // Sleep for a bit to prevent busy waiting
+        std::this_thread::sleep_for(std::chrono::milliseconds(5)); //sleep for a bit to prevent busy waiting
     } while (std::chrono::steady_clock::now() < endTime);
 
     return c;
@@ -268,7 +273,7 @@ bool checkForWinner(PongManager& pongManager, int winningScore, int aiParameter)
 
         pongManager.reset(); //reset grid
         clearScreen(); //clear the screen
-        pongManager.printGrid(aiParameter); //logic for making ball wait .25 sec after point scored
+        pongManager.printGrid(aiParameter); 
         std::this_thread::sleep_for(std::chrono::milliseconds(250)); //logic for making ball wait .25 sec after point scored
     }
     return false;
@@ -396,8 +401,8 @@ void clearScreen(int numRefreshes){
 
 //prompts the player if they want to play again, returns yes if play again, no if terminate
 bool askPlayAgain(int h, int w){
-    char userInput; //get user input
-    do{
+    char userInput = ' '; //get user input
+    while(userInput != 'Y' && userInput != 'N'){
         clearScreen();
         for(int i = 0; i < h/2; ++i){std::cout << "\n";}//vertical spacing
         for(int i = 0; i < (w-35)/2; ++i){std::cout << " ";}//horizontal spacing
@@ -411,18 +416,16 @@ bool askPlayAgain(int h, int w){
         userInput = getImmediateInput();
         
         userInput = toupper(userInput); //convert the letter the user entered to uppercase
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
-
-    } while(userInput != 'Y' && userInput != 'N');
+        std::this_thread::sleep_for(std::chrono::milliseconds(200)); //delay so text updates at 5 fps if user enters invald input
+    }
     
     if(userInput == 'Y'){return true;} //if the user choose to play again
     else{return false;} //if the user did NOT choose to play again
 }
 
-//ask the user for the AI difficulty
 int askAiDifficulty(int h, int w, int player, int aiParameter){
-    char userInput; //get user input
-    do{
+    char userInput = ' '; //get user input
+    while(userInput - '0' < 0 || userInput - '0' > 9){
         clearScreen();
         for(int i = 0; i < h/2; ++i){std::cout << "\n";}//vertical spacing
         for(int i = 0; i < (w-29)/2; ++i){std::cout << " ";}//horizontal spacing
@@ -445,9 +448,8 @@ int askAiDifficulty(int h, int w, int player, int aiParameter){
         userInput = getImmediateInput();
         
         userInput = toupper(userInput); //convert the letter the user entered to uppercase
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
-
-    } while(userInput - '0' < 0 || userInput - '0' > 9);
+        std::this_thread::sleep_for(std::chrono::milliseconds(200)); //delay so text updates at 5 fps if user enters invald input
+    }
 
     //return the user input as a char 0 - 9
     //subtract 48 to make returned char into correct int; '0' is 48 in ascii

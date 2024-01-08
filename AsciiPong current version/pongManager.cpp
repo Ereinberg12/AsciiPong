@@ -42,7 +42,6 @@ PongManager::PongManager(int h, int w, int paddleSize){
     //set the scores to 0
     p1Score = 0;
     p2Score = 0;
-
 }
 
 PongManager::~PongManager(){
@@ -101,7 +100,6 @@ void PongManager::printGrid(int aiParameter){
         std::cout << "AI 2 Score: " << p2Score;
     }
     std::cout << "\n";
-
 
     //print the grid
     for(int i = 0; i < width; ++i){

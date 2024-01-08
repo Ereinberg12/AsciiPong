@@ -17,13 +17,11 @@ int main(int argc, char* argv[]){
     int height;
     std::cout << "Enter your terminal's height:" << std::endl;
     std::cin >> height;
+    int paddleSize = (height / 10) + 1; //set the paddle size
     height = height - 6; //account for top text and lines
-
-    int paddleSize = height / 10; //set the paddle size
 
     //start the game
     playGame(height, width, numPointsToWin, framesPerSecond, paddleSize); //playGame function runs the game logic
-
 }
 
 

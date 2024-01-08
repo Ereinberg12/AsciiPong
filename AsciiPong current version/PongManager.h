@@ -32,7 +32,7 @@ struct PongManager{
         //move the ball to its location in the next frame
         void moveBall(int FPS);
 
-        int checkForWinner(); //returns 0 if no winner, 1 if P1 winds, and 2 if P2 wins
+        int checkForWinner(); //returns 0 if no winner, 1 if P1 wins, or 2 if P2 wins
 
         void reset(); //resets the screen. called after a player scores a point
 

@@ -12,7 +12,7 @@ class BufferToggle
 
     public:
         //Disables buffered input
-        void off(void)
+        void off()
         {
             tcgetattr(STDIN_FILENO, &t); //get the current terminal I/O structure
             t.c_lflag &= ~ICANON; //Manipulate the flag bits to do what you want it to do
@@ -20,7 +20,7 @@ class BufferToggle
         }
 
         //Enables buffered input
-        void on(void)
+        void on()
         {
             tcgetattr(STDIN_FILENO, &t); //get the current terminal I/O structure
             t.c_lflag |= ICANON; //Manipulate the flag bits to do what you want it to do
