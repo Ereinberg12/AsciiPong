@@ -21,6 +21,6 @@ Ball::Ball(int h, int w, char s){
 
     verticalDirection = true; //ball starts moving up (not relevant since v0 = 0)
     //set the initial speed values
-    horizontalSpeed = 40;
+    horizontalSpeed = 30; //default value, will be changed depending on frame width
     verticalSpeed = 0;
 }

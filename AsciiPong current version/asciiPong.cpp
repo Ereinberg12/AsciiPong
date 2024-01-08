@@ -1,4 +1,4 @@
-//asciiPong
+//asciiPong.cpp
 #include "PlayGame.h"
 #include <iostream>
 
@@ -7,7 +7,6 @@ int main(int argc, char* argv[]){
 
     int numPointsToWin = 3;
     int framesPerSecond = 30;
-    int paddleSize = 10;
 
     //prompt the user for the width and height of their terminal
     clearScreen();
@@ -19,6 +18,8 @@ int main(int argc, char* argv[]){
     std::cout << "Enter your terminal's height:" << std::endl;
     std::cin >> height;
     height = height - 6; //account for top text and lines
+
+    int paddleSize = height / 10; //set the paddle size
 
     //start the game
     playGame(height, width, numPointsToWin, framesPerSecond, paddleSize); //playGame function runs the game logic

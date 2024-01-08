@@ -205,9 +205,11 @@ void PongManager::reflectBottom(){
 
 bool PongManager::checkForCollisionWithPaddles(){
     if(checkForCollisionWithP1()){
+        addPaddles(); //add paddles to solve visual glitch with ball going into paddle
         return true;
     }
     else if(checkForCollisionWithP2()){
+        addPaddles(); //add paddles to solve visual glitch with ball going into paddle
         return true;
     }
 
@@ -221,7 +223,7 @@ bool PongManager::checkForCollisionWithP1(){
     }
 
     for(int i = 0; i < paddleSize; ++i){
-        if (ball.width == 0 && p1Pos + i  == ball.height){
+        if ((ball.width == 0 && p1Pos + i  == ball.height) || (ball.width == 1 && p1Pos + i  == ball.height)){
             return true;
         }
     }
@@ -237,7 +239,7 @@ bool PongManager::checkForCollisionWithP2(){
     }
 
     for(int i = 0; i < paddleSize; ++i){
-        if (ball.width == width - 1 && p2Pos + i  == ball.height){
+        if ((ball.width == width - 1 && p2Pos + i  == ball.height) || (ball.width == width - 2 && p2Pos + i  == ball.height)){
             return true;
         }
     }
@@ -322,11 +324,13 @@ void PongManager::reset(){
     p1Pos = height / 2;
     p2Pos = p1Pos;
     //initialize the ball
+    int prevBallSpeed = ball.horizontalSpeed;
     ball = Ball(height / 2, width / 2, ball.symbol);
+    ball.horizontalSpeed = prevBallSpeed;
 
     //reset the grid
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
+    for(int i = 0; i < height; i++){
+        for(int j = 0; j < width; j++){
             grid[i][j] = ' ';
         }
     }

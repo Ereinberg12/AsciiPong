@@ -51,11 +51,14 @@ void playGame(int h, int w, int winScore, int fps, int paddleSize){
 
         //if the computer is controlling both players
         if(aiParameter == 2){
-            ai1Difficulty = askAiDifficulty(height, width, 1, aiParameter); 
-            ai2Difficulty =  askAiDifficulty(height, width, 2, aiParameter);   
+            ai1Difficulty = askAiDifficulty(height, width, 1, aiParameter);
+            std::this_thread::sleep_for(std::chrono::milliseconds(200)); //load to add suspense 
+            ai2Difficulty =  askAiDifficulty(height, width, 2, aiParameter);
+            std::this_thread::sleep_for(std::chrono::milliseconds(200)); //load to add suspense   
         }
         else if(aiParameter == 1){//if the computer is only controlling player 2
             ai2Difficulty = askAiDifficulty(height, width, 2, aiParameter); 
+            std::this_thread::sleep_for(std::chrono::milliseconds(200)); //load to add suspense
         }
 
         //generate random seed
@@ -65,6 +68,8 @@ void playGame(int h, int w, int winScore, int fps, int paddleSize){
 
         //create a grid of chars to display
         PongManager pongManager(height, width, paddleSize); //57 x 203 is full screen on my computer (2 rows on top for text)
+
+        pongManager.ball.horizontalSpeed = pongManager.width / 6;
         
         char userInput = 'S'; //set the user input to S for start
 
@@ -84,36 +89,44 @@ void playGame(int h, int w, int winScore, int fps, int paddleSize){
 
             userInput = detectKeyboardInput(FPS); //recieve user input
 
+            int numSpacesToMovePaddle = (paddleSize / 3) + 1; //decide how many positions to move the paddle when moving
+
             //update P1's vertical position
             if(!(aiParameter == 2)){
                 if (userInput == 'w'){
-                    pongManager.updateP1(true);
-                    pongManager.updateP1(true); //changed to update twice to allow player to move faster
+                    for(int i = 0; i < numSpacesToMovePaddle; ++i){
+                        pongManager.updateP1(true); //move up  
+                    }
                 }
                 else if(userInput == 's'){
-                    pongManager.updateP1(false);
-                    pongManager.updateP1(false); //changed to update twice to allow player to move faster
+                    for(int i = 0; i < numSpacesToMovePaddle; ++i){
+                        pongManager.updateP1(false); //move down
+                    }
                 }
             }
             else{//if the AI is selected, have it move p1's paddle
-                pongManager.aiMove(1, ai1Difficulty, ai2Difficulty);
-                pongManager.aiMove(1, ai1Difficulty, ai2Difficulty);
+                for(int i = 0; i < numSpacesToMovePaddle; ++i){
+                    pongManager.aiMove(1, ai1Difficulty, ai2Difficulty);
+                }
             }
 
             //Update P2's vertical position
             if(aiParameter == 0){
                 if (userInput == 'p'){
-                    pongManager.updateP2(true);
-                    pongManager.updateP2(true); //changed to update twice to allow player to move faster
+                    for(int i = 0; i < numSpacesToMovePaddle; ++i){
+                        pongManager.updateP2(true); //move up
+                    }
                 }
                 else if(userInput == 'l'){
-                    pongManager.updateP2(false);
-                    pongManager.updateP2(false); //changed to update twice to allow player to move faster
+                    for(int i = 0; i < numSpacesToMovePaddle; ++i){
+                        pongManager.updateP2(false); //move down
+                    }
                 }
             }
             else{//if the AI is selected, have it move p2's paddle
-                pongManager.aiMove(2, ai1Difficulty, ai2Difficulty);
-                pongManager.aiMove(2, ai1Difficulty, ai2Difficulty);
+                for(int i = 0; i < numSpacesToMovePaddle; ++i){
+                    pongManager.aiMove(2, ai1Difficulty, ai2Difficulty);
+                }
             }
 
             //update the ball's position
@@ -169,7 +182,7 @@ void playGame(int h, int w, int winScore, int fps, int paddleSize){
 
     //display end screen
     printEndScreen(height, width);
-    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+    std::this_thread::sleep_for(std::chrono::milliseconds(5000));
 
     //turn the input buffer back on
     toggle.on();
@@ -356,13 +369,21 @@ void printAI2Wins(int h, int w){
     for(int i = (h/2) + 1; i < h; ++i){std::cout << "\n";}//vertical spacing
 }
 
+//prints the end screen
 void printEndScreen(int h, int w){
     clearScreen(); //clear the screen
-    for(int i = 0; i < h/2; ++i){std::cout << "\n";}//vertical spacing
+    for(int i = 0; i < (h/2) + 2; ++i){std::cout << "\n";}//vertical spacing (add + 2 to center given that top text is gone)
     for(int i = 0; i < (w-18)/2; ++i){std::cout << " ";}//horizontal spacing
-    std::cout << "Thanks for playing\n";
+    std::cout << "Thanks for playing";
     for(int i = (w-18)/2; i < w; ++i){std::cout << " ";}//horizontal spacing
-    for(int i = (h/2) + 1; i < h - 1; ++i){std::cout << "\n";}//vertical spacing
+
+    std::cout << "\n";
+
+    for(int i = 0; i < (w-61)/2; ++i){std::cout << " ";}//horizontal spacing
+    std::cout << "Check for updates at https://github.com/Ereinberg12/AsciiPong";
+    for(int i = (w-61)/2; i < w; ++i){std::cout << " ";}//horizontal spacing
+    
+    for(int i = (h/2) + 1; i < h ; ++i){std::cout << "\n";}//vertical spacing (add extra space to center given that top text is gone)
     std::cout << std::endl; //use endl to flush buffer
 }
 
