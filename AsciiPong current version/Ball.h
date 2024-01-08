@@ -2,7 +2,6 @@
 #define BALL
 
 struct Ball{
-
     Ball();
     Ball(int h, int w, char s);
 
@@ -14,9 +13,8 @@ struct Ball{
     int horizontalSpeed;
     int verticalSpeed;
 
-    double heightDouble; 
-    double widthDouble;
-    
+    double heightDouble; //more accurate height for calculation
+    double widthDouble; //more accurate width for calculation
 };
 
 #endif

@@ -64,9 +64,9 @@ void playGame(int h, int w, int winScore, int fps, int paddleSize){
         srand(time(nullptr));
 
         //create a grid of chars to display
-        PongManager pongGrid(height, width, paddleSize); //57 x 203 is full screen on my computer (2 rows on top for text)
+        PongManager pongManager(height, width, paddleSize); //57 x 203 is full screen on my computer (2 rows on top for text)
         
-        char userInput = 's'; //set the user input to s for start
+        char userInput = 'S'; //set the user input to S for start
 
         bool startOfGame = true;
 
@@ -75,7 +75,7 @@ void playGame(int h, int w, int winScore, int fps, int paddleSize){
         while(userInput != killKey){
             clearScreen(); //clear the screen
             
-            pongGrid.printGrid(aiParameter); //print the grid to the user
+            pongManager.printGrid(aiParameter); //print the grid to the user
 
             if(startOfGame){//if start of game, delay the ball moving by .25 sec
                 std::this_thread::sleep_for(std::chrono::milliseconds(250));
@@ -87,52 +87,52 @@ void playGame(int h, int w, int winScore, int fps, int paddleSize){
             //update P1's vertical position
             if(!(aiParameter == 2)){
                 if (userInput == 'w'){
-                    pongGrid.updateP1(true);
-                    pongGrid.updateP1(true); //changed to update twice to allow player to move faster
+                    pongManager.updateP1(true);
+                    pongManager.updateP1(true); //changed to update twice to allow player to move faster
                 }
                 else if(userInput == 's'){
-                    pongGrid.updateP1(false);
-                    pongGrid.updateP1(false); //changed to update twice to allow player to move faster
+                    pongManager.updateP1(false);
+                    pongManager.updateP1(false); //changed to update twice to allow player to move faster
                 }
             }
             else{//if the AI is selected, have it move p1's paddle
-                pongGrid.aiMove(1, ai1Difficulty, ai2Difficulty);
-                pongGrid.aiMove(1, ai1Difficulty, ai2Difficulty);
+                pongManager.aiMove(1, ai1Difficulty, ai2Difficulty);
+                pongManager.aiMove(1, ai1Difficulty, ai2Difficulty);
             }
 
             //Update P2's vertical position
             if(aiParameter == 0){
                 if (userInput == 'p'){
-                    pongGrid.updateP2(true);
-                    pongGrid.updateP2(true); //changed to update twice to allow player to move faster
+                    pongManager.updateP2(true);
+                    pongManager.updateP2(true); //changed to update twice to allow player to move faster
                 }
                 else if(userInput == 'l'){
-                    pongGrid.updateP2(false);
-                    pongGrid.updateP2(false); //changed to update twice to allow player to move faster
+                    pongManager.updateP2(false);
+                    pongManager.updateP2(false); //changed to update twice to allow player to move faster
                 }
             }
             else{//if the AI is selected, have it move p2's paddle
-                pongGrid.aiMove(2, ai1Difficulty, ai2Difficulty);
-                pongGrid.aiMove(2, ai1Difficulty, ai2Difficulty);
+                pongManager.aiMove(2, ai1Difficulty, ai2Difficulty);
+                pongManager.aiMove(2, ai1Difficulty, ai2Difficulty);
             }
 
             //update the ball's position
-            pongGrid.moveBall(FPS);
+            pongManager.moveBall(FPS);
 
             //readd the paddles to solve glitch when player wins point and ball gets printed over paddle
-            pongGrid.addPaddles();
+            pongManager.addPaddles();
 
             std::this_thread::sleep_for(std::chrono::milliseconds(250/FPS)); //wait a bit to help eliminate flashing on screen
 
             //check for winner
-            bool isWinner = checkForWinner(pongGrid, winningScore, aiParameter);
+            bool isWinner = checkForWinner(pongManager, winningScore, aiParameter);
             if(isWinner){
                 clearScreen(); //reset the view if someone won
-                pongGrid.reset(); //reset the view if someone won
-                pongGrid.printGrid(aiParameter); //reset the view if someone won
+                pongManager.reset(); //reset the view if someone won
+                pongManager.printGrid(aiParameter); //reset the view if someone won
                 std::this_thread::sleep_for(std::chrono::milliseconds(250)); //wait a quarter second so the winner doesn't print right away
 
-                if(pongGrid.p1Score > pongGrid.p2Score){//if player 1 won
+                if(pongManager.p1Score > pongManager.p2Score){//if player 1 won
                     if(aiParameter == 0 || aiParameter == 1){printP1Wins(height, width);}
                     else{printAI1Wins(height, width);}
                 }
@@ -149,8 +149,8 @@ void playGame(int h, int w, int winScore, int fps, int paddleSize){
                 clearScreen();
                 playAgain = askPlayAgain(height, width); //prompt the user to play again
                 if(playAgain){//reset the scores if they choose to play again
-                    pongGrid.p1Score = 0;
-                    pongGrid.p2Score = 0;
+                    pongManager.p1Score = 0;
+                    pongManager.p2Score = 0;
                     break;
                 }
                 else{
@@ -228,34 +228,34 @@ char detectKeyboardInput(int FPS) {
 }
 
 //checks the game for a winner, returns true if a player has won
-bool checkForWinner(PongManager& pongGrid, int winningScore, int aiParameter){
+bool checkForWinner(PongManager& pongManager, int winningScore, int aiParameter){
     //check for winner
-    if(pongGrid.checkForWinner() == 1){
-        pongGrid.p1Score++; //increment player1's score
+    if(pongManager.checkForWinner() == 1){
+        pongManager.p1Score++; //increment player1's score
 
-        if(pongGrid.p1Score >= winningScore){
+        if(pongManager.p1Score >= winningScore){
             system("clear"); //clear the screen
-            pongGrid.printGrid(aiParameter);
+            pongManager.printGrid(aiParameter);
             return true;
         }
 
-        pongGrid.reset(); //reset grid
+        pongManager.reset(); //reset grid
         clearScreen(); //clear the screen
-        pongGrid.printGrid(aiParameter); //logic for making ball wait .25 sec after point scored
+        pongManager.printGrid(aiParameter); //logic for making ball wait .25 sec after point scored
         std::this_thread::sleep_for(std::chrono::milliseconds(250)); //logic for making ball wait .25 sec after point scored
     }
-    else if (pongGrid.checkForWinner() == 2){
-        pongGrid.p2Score++; //increment player2's score
+    else if (pongManager.checkForWinner() == 2){
+        pongManager.p2Score++; //increment player2's score
 
-        if(pongGrid.p2Score >= winningScore){
+        if(pongManager.p2Score >= winningScore){
             system("clear"); //clear the screen
-            pongGrid.printGrid(aiParameter);
+            pongManager.printGrid(aiParameter);
             return true;
         }
 
-        pongGrid.reset(); //reset grid
+        pongManager.reset(); //reset grid
         clearScreen(); //clear the screen
-        pongGrid.printGrid(aiParameter); //logic for making ball wait .25 sec after point scored
+        pongManager.printGrid(aiParameter); //logic for making ball wait .25 sec after point scored
         std::this_thread::sleep_for(std::chrono::milliseconds(250)); //logic for making ball wait .25 sec after point scored
     }
     return false;
@@ -366,7 +366,7 @@ void printEndScreen(int h, int w){
     std::cout << std::endl; //use endl to flush buffer
 }
 
-//Clears the screen (only works on linux/mac)
+//clears the screen (only works on linux/mac)
 void clearScreen(int numRefreshes){
     for(int i = 0; i < numRefreshes; ++i){
         system("clear"); //clear the screen

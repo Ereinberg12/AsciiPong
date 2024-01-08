@@ -11,11 +11,7 @@ class BufferToggle
         struct termios t;
 
     public:
-
-        /*
-         * Disables buffered input
-         */
-
+        //Disables buffered input
         void off(void)
         {
             tcgetattr(STDIN_FILENO, &t); //get the current terminal I/O structure
@@ -23,11 +19,7 @@ class BufferToggle
             tcsetattr(STDIN_FILENO, TCSANOW, &t); //Apply the new settings
         }
 
-
-        /*
-         * Enables buffered input
-         */
-
+        //Enables buffered input
         void on(void)
         {
             tcgetattr(STDIN_FILENO, &t); //get the current terminal I/O structure

@@ -9,8 +9,8 @@ Ball::Ball(){
 
 Ball::Ball(int h, int w, char s){
     symbol = s;
-    height = h + 2;
-    heightDouble = h + 2;
+    height = h + 2; //add 2 to height to center on screen with top text
+    heightDouble = h + 2; //add 2 to height to center on screen with top text
     width = w;
     widthDouble = w;
 
