@@ -3,6 +3,7 @@
 #include <iostream>
 #include <climits>
 #include <cmath>
+#include <string>
 
 PongManager::PongManager(int h, int w, int paddleSize){
     //set height and width
@@ -15,14 +16,14 @@ PongManager::PongManager(int h, int w, int paddleSize){
     //initialize the ball
     ball = Ball(height / 2, width / 2, 'o');
 
-    //Allocate memory
+    //allocate memory
     grid = new char*[height];
 
-    //Allocate memory for each row
+    //allocate memory for each row
     for(int i = 0; i < height; ++i){
         grid[i] = new char[width];
 
-        //Initialize each character to ' '
+        //initialize each character to ' '
         for(int j = 0; j < width; ++j){
             grid[i][j] = ' ';
         }
@@ -54,52 +55,9 @@ PongManager::~PongManager(){
     delete[] grid;
 }
 
-void PongManager::printGrid(int aiParameter){
+void PongManager::printGrid(int aiParameter, char killKey, char pauseKey, bool paused){
     //print the header
-    for (int i = 0; i < (width - 28)/2; ++i){
-        std::cout << "~";
-    }
-    std::cout << "ASCII PONG BY ETHAN REINBERG";
-    for (int i = (width - 28)/2; i < width - 28; ++i){
-        std::cout << "~";
-    }
-    std::cout << "\n";
-
-    //print player1's score
-    if(!(aiParameter == 2)){
-        for (int i = 0; i < (width - 16)/2; ++i){
-            std::cout << " ";
-        }
-        std::cout << "Player 1 Score: " << p1Score;
-    }
-    else{//Print AI1's score
-        for (int i = 0; i < (width - 12)/2; ++i){
-            std::cout << " ";
-        }
-        std::cout << "AI 1 Score: " << p1Score;
-    }
-    std::cout << "\n";
-
-    //print player2's score 
-    if(aiParameter == 0){
-        for (int i = 0; i < (width - 16)/2; ++i){
-            std::cout << " ";
-        }
-        std::cout << "Player 2 Score: " << p2Score;
-    }//print AI's score 
-    else if (aiParameter == 1){
-        for (int i = 0; i < (width - 10)/2; ++i){
-            std::cout << " ";
-        }
-        std::cout << "AI Score: " << p2Score;
-    }//print AI2's score 
-    else{
-        for (int i = 0; i < (width - 12)/2; ++i){
-            std::cout << " ";
-        }
-        std::cout << "AI 2 Score: " << p2Score;
-    }
-    std::cout << "\n";
+    printHeader(aiParameter, killKey, pauseKey, paused);
 
     //print the grid
     for(int i = 0; i < width; ++i){
@@ -117,6 +75,77 @@ void PongManager::printGrid(int aiParameter){
     std::cout << "\n";
 
     std::cout << std::flush; //clear the buffer so "\n" can be used instead of std::endl
+}
+
+void PongManager::printHeader(int aiParameter, char killKey, char pauseKey, bool paused){
+    //print the header
+    for (int i = 0; i < (width - 28)/2; ++i){
+        std::cout << "~";
+    }
+    std::cout << "ASCII PONG BY ETHAN REINBERG";
+    for (int i = (width - 28)/2; i < width - 28; ++i){
+        std::cout << "~";
+    }
+    std::cout << "\n";
+
+    //format the pause and quit button strings
+    std::string quitText = "Press ";
+    quitText += killKey;
+    quitText += " to quit";
+
+    std::string pauseText;
+    if(!paused){
+        pauseText = "Press " ;
+        if(pauseKey != ' '){
+            pauseText += pauseKey;
+        }
+        else{
+            pauseText += "space"; //if the space key is being used to pause, use the word space instead of a space
+        }
+        pauseText += " to pause";
+    }
+    else{
+        pauseText = "Press any key to continue";
+    }
+
+    std::cout << quitText; //display the quit button
+    
+    //print player1's score
+    if(!(aiParameter == 2)){
+        for (int i = 0; i < ((width - 16)/2) - (int) quitText.length(); ++i){
+            std::cout << " ";
+        }
+        std::cout << "Player 1 Score: " << p1Score;
+    }
+    else{//Print AI1's score
+        for (int i = 0; i < ((width - 12)/2) - (int) quitText.length(); ++i){
+            std::cout << " ";
+        }
+        std::cout << "AI 1 Score: " << p1Score;
+    }
+    std::cout << "\n";
+
+    std::cout << pauseText;
+    //print player2's score 
+    if(aiParameter == 0){
+        for (int i = 0; i < ((width - 16)/2) - (int) pauseText.length(); ++i){
+            std::cout << " ";
+        }
+        std::cout << "Player 2 Score: " << p2Score;
+    }//print AI's score 
+    else if (aiParameter == 1){
+        for (int i = 0; i < ((width - 10)/2) - (int) pauseText.length(); ++i){
+            std::cout << " ";
+        }
+        std::cout << "AI Score: " << p2Score;
+    }//print AI2's score 
+    else{
+        for (int i = 0; i < ((width - 12)/2) - (int) pauseText.length(); ++i){
+            std::cout << " ";
+        }
+        std::cout << "AI 2 Score: " << p2Score;
+    }
+    std::cout << "\n";
 }
 
 void PongManager::updateP1(bool up){
@@ -266,9 +295,9 @@ void PongManager::moveBall(int FPS){
     }
 
     //calculate the number of indices to move
-    double numIndicesHorizontalDouble = ball.horizontalSpeed / 10.0; //Default: 20.0
+    double numIndicesHorizontalDouble = ball.horizontalSpeed / 10.0; //Default: 10.0
 
-    double numIndicesVerticalDouble = ball.verticalSpeed / 30.0; //Default: 60.0
+    double numIndicesVerticalDouble = ball.verticalSpeed / 30.0; //Default: 30.0
 
     //calculate where to place the ball
     if(ball.verticalDirection){//if the ball is moving up

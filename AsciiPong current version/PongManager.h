@@ -9,7 +9,7 @@ struct PongManager{
         ~PongManager(); //dtor
 
         //prints the grid in height x width resolution
-        void printGrid(int aiParameter);
+        void printGrid(int aiParameter, char killKey, char pauseKey, bool paused);
 
         //functions to update paddle locations
         void updateP1(bool up); //if up is true, move upwards
@@ -42,6 +42,8 @@ struct PongManager{
 
         //adds the paddles to the grid
         void addPaddles();
+
+        void printHeader(int aiParameter, char killKey, char pauseKey, bool paused);
         
 
         //VARIABLES

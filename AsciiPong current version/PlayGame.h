@@ -8,21 +8,7 @@ void playGame(int h, int w, int winScore, int fps, int paddleSize); //runs the g
 
 char detectKeyboardInput(int FPS); //accepts the frames per second
 
-bool checkForWinner(PongManager& pongGrid, int winningScore, int aiParameter); //checks if a player has won
-
-void printStartPage(int h, int w, int winningScore); //prints start page
-
-void printP1Wins(int h, int w); //functions to call to print winner
-
-void printP2Wins(int h, int w); //functions to call to print winner
-
-void printAIWins(int h, int w); //functions to call to print winner
-
-void printAI1Wins(int h, int w); //functions to call to print winner
-
-void printAI2Wins(int h, int w); //functions to call to print winner
-
-void printEndScreen(int h, int w); //prints the end screen
+bool checkForWinner(PongManager& pongGrid, int winningScore, int aiParameter, char killKey, char pauseKey, bool paused); //checks if a player has won
 
 void clearScreen(int numRefreshes = 1); //clears the screen
 
