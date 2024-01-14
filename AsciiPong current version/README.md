@@ -2,7 +2,7 @@
 
 Hi, I'm a student at USC studying computer science and business. I made this game for fun in my free time. It was created entirely using C++ with no external libraries outside of the C++ stl, which is why the graphs are ASCII.
 
-Instructions For Funning: 
+Instructions For Running: 
 
 -Use the Makefile to create an executible by typing "make" (no quotes) in the terminal. The game only works on Mac and Linux. Sorry Windows People.
 
