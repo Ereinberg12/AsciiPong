@@ -21,12 +21,13 @@ PongManager::PongManager(int h, int w, int paddleSize){
 
     //allocate memory for each row
     for(int i = 0; i < height; ++i){
-        grid[i] = new char[width];
+        grid[i] = new char[width + 1]; //add one extra spot to the width string for \0
 
         //initialize each character to ' '
         for(int j = 0; j < width; ++j){
             grid[i][j] = ' ';
         }
+        grid[i][width] = '\0'; //add the null char to tell the string to terminate
     }
 
     //set the paddleSize

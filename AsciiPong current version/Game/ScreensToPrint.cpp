@@ -1,6 +1,5 @@
 //screensToPrint.cpp
 #include "PlayGame.h"
-
 #include <iostream>
 #include <string>
 
@@ -9,18 +8,7 @@ void printStartPage(int h, int w, int winningScore){
     clearScreen(); //clear the screen
 
     //top spacing
-    for(int i = 0; i < (h - 10) /2; ++i){std::cout << "\n";}
-
-    for(int i = 0; i < (w - 39) / 2; ++i){std::cout << " ";}
-    std::cout << "WELCOME TO ASCII PONG BY ETHAN REINBERG";
-    for(int i = (w - 39) / 2; i < w - 39; ++i){std::cout << " ";}
-
-    std::cout << "\n";
-
-    for(int i = 0; i < w; ++i){std::cout << "~";}
-    std::cout << "\n";
-
-    std::cout << "\n";
+    for(int i = 0; i < (h - 8) /2; ++i){std::cout << "\n";}
 
     for(int i = 0; i < (w - 31) / 2; ++i){std::cout << " ";}
     std::cout << "USE W AND S TO CONTROL PLAYER 1";
